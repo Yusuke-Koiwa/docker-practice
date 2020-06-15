@@ -2,15 +2,17 @@ FROM ruby:2.5.3
 
 RUN apt-get update -qq && \
     apt-get install -y build-essential \
-                        libpq-dev \
-                        nodejs
+                       nodejs
 
-RUN mkdir /app_name
-ENV APP_ROOT /app_name
-WORKDIR $APP_ROOT
+RUN mkdir /webapp
+WORKDIR /webapp
 
-ADD ./Gemfile $APP_ROOT/Gemfile
-ADD ./Gemfile.lock $APP_ROOT/Gemfile.lock
+ADD Gemfile /webapp/Gemfile
+ADD Gemfile.lock /webapp/Gemfile.lock
 
+RUN gem install bundler
 RUN bundle install
-ADD . $APP_ROOT
+
+ADD . /webapp
+
+RUN mkdir -p tmp/sockets
